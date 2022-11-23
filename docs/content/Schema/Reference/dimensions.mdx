@@ -25,6 +25,10 @@ name should:
 - Start with a lowercase letter
 - Consist of numbers, letters and `_`
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`Products`, {
   dimensions: {
@@ -41,6 +45,18 @@ cube(`Products`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Parameters
 
 ### <--{"id" : "Parameters"}--> title
@@ -48,6 +64,10 @@ cube(`Products`, {
 You can use the `title` parameter to change a dimension's displayed name. By
 default, Cube.js will humanize your dimension key to create a display name. In
 order to override default behavior, please use the `title` property:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -61,9 +81,25 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> description
 
 You can add details to a dimension's definition via the `description` property:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -77,10 +113,26 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> shown
 
 You can manage the visibility of the dimension using the `shown` property. The
 default value of `shown` is `true`.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -94,6 +146,18 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> case
 
 The `case` statement is used to define if/then/else conditions to display data.
@@ -103,6 +167,10 @@ declares a condition and result if the rule returns a true value. The second
 
 The following static `label` example will create a `size` dimension with values
 `xl` and `xxl`:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -123,8 +191,24 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 The `label` property can be defined dynamically as an object with a `sql`
 property:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -157,6 +241,18 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> primaryKey
 
 Specify which dimension is a primary key for a cube. The default value is
@@ -171,6 +267,10 @@ parameter to `false`. If you still want `shown` to be `true`, set it manually.
 
 </WarningBox>
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Products', {
   dimensions: {
@@ -183,10 +283,26 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> subQuery
 
 The `subQuery` statement allows you to reference a measure in a dimension. It's
 an advanced concept and you can learn more about it [here][ref-subquery].
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -200,10 +316,26 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> propagateFiltersToSubQuery
 
 When this statement is set to `true`, the filters applied to the query will be
 passed to the [subquery][self-subquery].
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -218,9 +350,25 @@ cube('Products', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> meta
 
 Custom metadata. Can be used to pass any information to the frontend.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Products', {
@@ -236,6 +384,18 @@ cube('Products', {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 [ref-schema-ref-joins]: /schema/reference/joins
 [ref-subquery]: /schema/fundamentals/additional-concepts#subquery

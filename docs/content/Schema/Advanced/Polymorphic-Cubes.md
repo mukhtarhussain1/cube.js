@@ -43,6 +43,10 @@ The first step is to create a `User` cube, which will act as a base cube for our
 `Teachers` and `Students` cubes and will contain all common measures and
 dimensions:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`Users`, {
   sql: `SELECT * FROM USERS`,
@@ -67,7 +71,23 @@ cube(`Users`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Then you can extend the `Teachers` and `Students` cubes from `Users`:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Teachers`, {
@@ -81,7 +101,23 @@ cube(`Students`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Once we have those cubes, we can define correct joins from the `Lessons` cube:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Lessons`, {
@@ -99,6 +135,18 @@ cube(`Lessons`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 [ref-schema-advanced-extend]: /schema/advanced/extending-cubes
 [ref-schema-ref-cubes-extends]: /schema/reference/cube#extends

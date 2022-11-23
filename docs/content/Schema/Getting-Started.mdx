@@ -10,11 +10,15 @@ redirect_from:
 ---
 
 <InfoBox>
-  We're excited to expand the beta of YAML and Python support in Cube data modeling. <br />
-  Please <a href="https://forms.gle/4CZRRKK8nD4PvtxZA"> reach out to us </a> if you’d like to sign up for early access.
+  We're excited to expand the beta of YAML and Python support in Cube data
+  modeling. <br />
+  Please <a href="https://forms.gle/4CZRRKK8nD4PvtxZA">
+    {' '}
+    reach out to us{' '}
+  </a> if you’d like to sign up for early access.
 </InfoBox>
 
-A Cube.js Data Schema is used to model raw data into meaningful business
+A Cube Data Schema is used to model raw data into meaningful business
 definitions and pre-aggregate data for optimal results. The data schema is
 exposed through the [querying API][ref-backend-restapi] that allows end-users to
 query a wide variety of analytical queries without modifying the schema itself.
@@ -41,17 +45,39 @@ allows building well-organized and reusable SQL.
 
 ## 1. Creating a Cube
 
-In Cube.js, [cubes][ref-schema-cube] are used to organize entities and
-connections between entities. Usually one cube is created for each table in the
-database, such as `users`, `orders`, `products`, etc. In the `sql` parameter of
-the cube we define a base table for this cube. In our case, the base table is
-simply our `users` table.
+In Cube, [cubes][ref-schema-cube] are used to organize entities and connections
+between entities. Usually one cube is created for each table in the database,
+such as `users`, `orders`, `products`, etc. In the `sql` parameter of the cube
+we define a base table for this cube. In our case, the base table is simply our
+`users` table.
+
+You can define schemas in either JavaScript or YAML, we'll go over both below:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
+// schema/Users.js
 cube(`Users`, {
   sql: `SELECT * FROM users`,
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+# schema/Users.yml
+cubes:
+  - name: Users
+    sql: 'SELECT * FROM users'
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 ## 2. Adding Measures and Dimensions
 
@@ -70,6 +96,10 @@ product name, or units of time (e.g., day, week, month).
 </InfoBox>
 
 Let's go ahead and create our first measure and two dimensions:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Users`, {
@@ -96,10 +126,42 @@ cube(`Users`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Users
+    sql: 'SELECT * FROM users'
+
+    measures:
+      - name: count
+        type: count
+
+    dimensions:
+      - name: id
+        sql: 'id'
+        type: number
+        primaryKey: true
+
+      - name: city
+        sql: 'city'
+        type: string
+
+      - name: companyName
+        sql: 'company_name'
+        type: string
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Let's break down the above code snippet piece-by-piece. After defining the base
 table for the cube (with the `sql` property), we create a `count` measure in the
 `measures` block. [The type][ref-schema-types-formats] `count` and sql `id`
-means that when this measure will be requested via an API, Cube.js will generate
+means that when this measure will be requested via an API, Cube will generate
 and execute the following SQL:
 
 ```sql
@@ -107,7 +169,7 @@ SELECT count(id) from users;
 ```
 
 When we apply a city dimension to the measure to see "Where are users based?",
-Cube.js will generate SQL with a `GROUP BY` clause:
+Cube will generate SQL with a `GROUP BY` clause:
 
 ```sql
 SELECT city, count(id) from users GROUP BY 1;
@@ -120,6 +182,10 @@ grouping.
 
 Now let's answer the next question – "How many paying users do we have?". To
 accomplish this, we will introduce **measure filters**:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Users`, {
@@ -138,6 +204,30 @@ cube(`Users`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Users
+    sql: 'SELECT * FROM users'
+
+    measures:
+      - name: count
+        type: count
+
+      - name: paying_count
+        sql: 'id'
+        type: count
+        filters:
+          - sql: "{CUBE}.paying = 'true'"
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 <InfoBox>
 
 It is best practice to prefix references to table columns with the name of the
@@ -146,7 +236,7 @@ cube or with the `CUBE` constant when referencing the current cube's column.
 </InfoBox>
 
 That's it! Now we have the `payingCount` measure, which shows only our paying
-users. When this measure is requested, Cube.js will generate the following SQL:
+users. When this measure is requested, Cube will generate the following SQL:
 
 ```sql
 SELECT
@@ -164,9 +254,13 @@ these dimensions alongside measures in the requested query.
 ## 4. Using Calculated Measures
 
 To answer "What is the percentage of paying users out of the total?", we need to
-calculate the paying users ratio, which is basically `payingCount / count`.
-Cube.js makes it extremely easy to perform this kind of calculation. Let's add a
-new measure to our cube called `payingPercentage`:
+calculate the paying users ratio, which is basically `payingCount / count`. Cube
+makes it extremely easy to perform this kind of calculation. Let's add a new
+measure to our cube called `payingPercentage`:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Users`, {
@@ -190,6 +284,35 @@ cube(`Users`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Users
+    sql: 'SELECT * FROM users'
+
+    measures:
+      - name: count
+        type: count
+
+      - name: payingCount
+        sql: 'id'
+        type: count
+        filters:
+          - sql: "{CUBE}.paying = 'true'"
+
+      - name: payingPercentage
+        sql: '100.0 * ${payingCount} / ${count}'
+        type: number
+        format: percent
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 Here we defined a calculated measure `payingPercentage`, which divides
 `payingCount` by `count`. This example shows how you can reference measures

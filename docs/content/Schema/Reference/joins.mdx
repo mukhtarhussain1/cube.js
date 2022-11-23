@@ -14,6 +14,10 @@ The `joins` parameter declares a block to define relationships between cubes. It
 allows users to access and compare fields from two or more cubes at the same
 time.
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('MyCube', {
   joins: {
@@ -24,6 +28,23 @@ cube('MyCube', {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: MyCube
+    joins:
+      - name: TargetCubeName
+        relationship: belongsTo || hasMany || hasOne
+        sql: SQL ON clause
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 All joins are generated as `LEFT JOIN`. The cube which defines the join serves
 as a main table, and any cubes referenced inside the `joins` property are used
@@ -48,6 +69,10 @@ The name of a join should match the [name of the external
 cube][ref-schema-cube-naming]. For example when a `Products` cube is being
 joined on to an `Orders` cube, we would define the join as follows:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Orders', {
   joins: {
@@ -58,6 +83,23 @@ cube('Orders', {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    joins:
+      - name: Products
+        relationship: belongsTo
+        sql: '{CUBE.id} = {Products.orderId}'
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 ## Parameters
 
@@ -89,6 +131,10 @@ This relationship indicates that the one row in the cube can match only one row
 in the joined cube. For example, in a model containing users and user profiles,
 the users cube would have the following join:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Users', {
   joins: {
@@ -100,6 +146,23 @@ cube('Users', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Users
+    joins:
+      - name: Profile
+        relationship: hasOne
+        sql: '{Users}.id = {Profile.user_id}'
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 #### hasMany
 
 A `hasMany` relationship indicates a one-to-many connection with another cube.
@@ -107,6 +170,10 @@ You'll often find this relationship on the "other side" of a `belongsTo`
 relationship. This relationship indicates that the one row in the cube can match
 many rows in the joined cube. For example, in a model containing authors and
 books, the authors cube would have the following join:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Authors', {
@@ -119,6 +186,23 @@ cube('Authors', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Authors
+    joins:
+      - name: Books
+        relationship: hasMany
+        sql: '{Authors}.id = {Books.author_id}'
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 #### belongsTo
 
 A `belongsTo` relationship indicates a many-to-one connection with another cube.
@@ -127,6 +211,10 @@ relationship. This relationship indicates that the one row of the declaring cube
 matches a row in the joined instance, while the joined instance can have many
 rows in the declaring cube. For example, in a model containing orders and
 customers, the orders cube would have the following join:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -139,11 +227,32 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    joins:
+      - name: Customers
+        relationship: belongsTo
+        sql: '{Orders}.customer_id = {Customers.id}'
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> sql
 
 `sql` is necessary to indicate a related column between cubes. It is important
 to properly specify a matching column when creating joins. Take a look at the
 example below:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -158,6 +267,23 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    joins:
+      - name: Customers
+        relationship: belongsTo
+        sql: '{Orders}.customer_id = {Customers.id}'
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Setting a Primary Key
 
 In order for a join to work, it is necessary to define a `primaryKey` as
@@ -171,6 +297,10 @@ select distinct primary keys from `Order` first and then will join these primary
 keys with `Order` to get the correct `Order Amount` sum result. Please note that
 `primaryKey` should be defined in the `dimensions` section.
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Orders', {
   dimensions: {
@@ -183,12 +313,34 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    dimensions:
+      - name: customer_id
+        sql: id
+        type: number
+        primary_key: true
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 <InfoBox>
 
 Setting `primaryKey` to `true` will change the default value of the `shown`
 parameter to `false`. If you still want `shown` to be `true` — set it manually.
 
 </InfoBox>
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -203,6 +355,25 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    dimensions:
+      - name: customer_id
+        sql: id
+        type: number
+        primary_key: true
+        shown: true
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 If you don't have a single column in a cube's table that can act as a primary
 key, you can create a composite primary key as shown below.
 
@@ -212,6 +383,10 @@ The example uses Postgres string concatenation; note that SQL may be different
 depending on your database.
 
 </WarningBox>
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Users', {
@@ -225,6 +400,26 @@ cube('Users', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Users
+    dimensions:
+      - name: id
+        sql:
+          "{CUBE}.user_id || '-' || {CUBE}.signup_week || '-' ||
+          {CUBE}.activity_week"
+        type: string
+        primary_key: true
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## CUBE reference
 
 When you have several joined cubes, you should accurately use columns’ names to
@@ -232,6 +427,10 @@ avoid any mistakes. One way to make no mistakes is to use the `${CUBE}`
 reference. It allows you to specify columns’ names in cubes without any
 ambiguity. During the implementation of the query, this reference will be used
 as an alias for a basic cube. Take a look at the following example:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Users', {
@@ -244,6 +443,23 @@ cube('Users', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Users
+    dimensions:
+      - name: name
+        sql: '{CUBE}.name'
+        type: string
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Transitive joins
 
 <WarningBox>
@@ -255,6 +471,10 @@ it here][ref-schema-fundamentals-join-dir].
 
 Cube automatically takes care of transitive joins. For example if you have the
 following schema:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`A`, {
@@ -294,6 +514,39 @@ cube(`C`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: A
+    # ...
+    joins:
+      - name: B
+        sql: '{A}.b_id = {B}.id'
+        relationship: belongsTo
+    measures:
+      - name: count
+        type: count
+  - name: B
+    # ...
+    joins:
+      - name: C
+        sql: '{B}.c_id = {C}.id'
+        relationship: belongsTo
+  - name: C
+    # ...
+    dimensions:
+      - name: category
+        sql: category
+        type: string
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 and the following query:
 

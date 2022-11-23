@@ -18,6 +18,10 @@ supports three kinds of relationships often found in SQL databases:
 
 To use an example, let's use two cubes, `Customers` and `Orders`:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Customers', {
   ...,
@@ -52,7 +56,23 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 We could add a join to the `Customers` cube:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Customers', {
@@ -66,6 +86,18 @@ cube('Customers', {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 The join above means a customer has many orders. Let's send the following JSON
 query:
@@ -108,6 +140,10 @@ resulting SQL, any guest checkouts would be excluded from the results. To remedy
 this, we'll remove the join from the `Customers` cube and instead define a join
 with a `belongsTo` relationship on the `Orders` cube:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Orders', {
   ...,
@@ -120,6 +156,18 @@ cube('Orders', {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 In the above schema, our `Orders` cube defines the relationship between itself
 and the `Customer` cube. The same JSON query now results in the following SQL
@@ -201,6 +249,10 @@ more about direction of joins here][self-join-direction].
 
 </InfoBox>
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`Posts`, {
   sql: `SELECT * FROM posts`,
@@ -244,8 +296,24 @@ cube(`PostTopics`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 In scenarios where a table doesn't define a primary key, one can be generated
 using SQL:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`PostTopics`, {
@@ -258,6 +326,18 @@ cube(`PostTopics`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 ### <--{"id" : "Many-to-many joins"}--> Many-to-many joins without an associative table
 
@@ -272,6 +352,10 @@ campaign. Both `Emails` and `Transactions` have a `campaign_id` column. We donâ€
 have a campaigns table, but data about campaigns is part of the `Emails` table.
 
 Letâ€™s take a look at the `Emails` cube first:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Emails`, {
@@ -303,7 +387,23 @@ cube(`Emails`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 We can extract campaigns data into a virtual `Campaigns` cube:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Campaigns`, {
@@ -338,6 +438,18 @@ GROUP BY 1, 2, 3
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 The following diagram shows our data schema with the `Campaigns` cube:
 
 <div style="text-align: center">
@@ -352,6 +464,10 @@ The following diagram shows our data schema with the `Campaigns` cube:
 The last piece is to finally declare a many-to-many relationship. This should be
 done by declaring a [`hasMany` relationship][ref-schema-ref-joins-relationship]
 on the associative cube, `Campaigns` in our case.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Emails`, {
@@ -414,10 +530,26 @@ cube(`Campaigns`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Directions of joins
 
 The direction of [joins][ref-schema-ref-joins] greatly influences the final
 result set. As an example, let's take two cubes, `Orders` and `Customers`:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -442,9 +574,7 @@ cube('Orders', {
     },
   },
 });
-```
 
-```javascript
 cube('Customers', {
   sql: `SELECT * FROM customers`,
 
@@ -465,11 +595,27 @@ cube('Customers', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 The first case is to calculate the total revenue per customer. Let's name this
 metric `totalRevenue`. We also need to be aware of the fact that orders can be
 placed without customer registration (anonymous customers/guest checkouts).
 Because of anonymous customers, we should start the join from the `Orders` onto
 the `Customers` cube so that we do not lose data from anonymous orders:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -510,6 +656,18 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 After adding the join to the schema, we can query the cube as follows:
 
 ```json
@@ -529,6 +687,10 @@ The second case is to find customers without any orders. Let's call this metric
 to find customers with 0 orders placed. The reverse order of joins would result
 in a dataset without data for customers with no orders. Therefore, in this
 instance, we declare the join in the `Customers` cube:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Customers', {
@@ -564,6 +726,18 @@ cube('Customers', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 We can then query the cube as follows:
 
 ```json
@@ -586,7 +760,11 @@ We can then query the cube as follows:
 
 ### <--{"id" : "Directions of joins"}--> Using views
 
-Views can also be used in Cube to represent the previous two scenarios;
+Views can also be used in Cube to represent the previous two scenarios:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 view('TotalRevenuePerCustomer', {
@@ -615,10 +793,26 @@ view('CustomersWithoutOrders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Directions of joins"}--> Transitive join pitfalls
 
 Let's consider an example where we have a many-to-many relationship between
 `Users` and `Organizations` through an `OrganizationUsers` cube:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Users`, {
@@ -683,6 +877,18 @@ cube(`Organizations`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Let's try and execute a query:
 
 ```json
@@ -699,6 +905,10 @@ there's no path from `Users` to `Organizations` or either from `Organizations`
 to `Users`. One possible solution is to move the `Users-OrganizationUsers` join
 from `OrganizationUsers` cube to `Users`, although this affects the query
 semantics and thus the final results:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Users`, {
@@ -730,7 +940,21 @@ cube(`OrganizationUsers`, {
 });
 ```
 
-[ref-schema-ref-joins] /schema/reference/joins
-[ref-schema-ref-joins-relationship]/schema/reference/joins#parameters-relationship
-[self-many-to-many-no-assoc-table]#many-to-many-relationship#many-to-many-relationship-without-an-associative-table
-[self-join-direction] /schema/fundamentals/joins#directions-of-joins
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
+[ref-schema-ref-joins]: /schema/reference/joins
+[ref-schema-ref-joins-relationship]:
+  /schema/reference/joins#parameters-relationship
+[self-many-to-many-no-assoc-table]:
+  #many-to-many-relationship#many-to-many-relationship-without-an-associative-table
+[self-join-direction]: /schema/fundamentals/joins#directions-of-joins

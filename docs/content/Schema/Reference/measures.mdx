@@ -24,6 +24,10 @@ measure should:
 - Start with a lowercase letter
 - Consist of numbers, letters and `_`
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`Orders`, {
   measures: {
@@ -40,6 +44,26 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: count
+        sql: id
+        type: count
+      - name: totalAmount
+        sql: amount
+        type: sum
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Parameters
 
 ### <--{"id" : "Parameters"}--> type
@@ -48,6 +72,10 @@ cube(`Orders`, {
 a measure. Please refer to the [Measure Types
 Guide][ref-schema-ref-types-formats-measures-types] for the full list of measure
 types.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -60,12 +88,33 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: ordersCount
+        sql: id
+        type: count
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> sql
 
 `sql` is a required parameter. It can take any valid SQL expression depending on
 the `type` of the measure. Please refer to the [Measure Types
 Guide][ref-schema-ref-types-formats-measures-types] for detailed information on
 the corresponding sql parameter.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -78,12 +127,33 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: usersCount
+        sql: count(*)
+        type: number
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> format
 
 `format` is an optional parameter. It is used to format the output of measures
 in different ways, for example, as currency for `revenue`. Please refer to the
 [Measure Formats Guide][ref-schema-ref-types-formats-measures-formats] for the
 full list of supported formats.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -97,11 +167,33 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: total
+        sql: amount
+        type: runningTotal
+        format: currency
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> title
 
 You can use the `title` parameter to change a measure’s displayed name. By
 default, Cube.js will humanize your measure key to create a display name. In
 order to override default behavior, please use the `title` parameter.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -115,9 +207,31 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: ordersCount
+        sql: id
+        type: count
+        title: Number of Orders Placed
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> description
 
 You can add details to a measure’s definition via the `description` parameter:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -131,10 +245,32 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: ordersCount
+        sql: id
+        type: count
+        description: count of all orders
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> shown
 
 You can manage the visibility of the measure using the `shown` parameter. The
 default value of `shown` is `true`.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -148,10 +284,32 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: ordersCount
+        sql: id
+        type: count
+        shown: false
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> filters
 
 If you want to add some conditions for a metric's calculation, you should use
 the `filters` parameter. The syntax looks like the following:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -164,6 +322,25 @@ cube(`Orders`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: ordersCompletedCount
+        sql: id
+        type: count
+        filters:
+          - sql: "{CUBE}.status = 'completed'"
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 ### <--{"id" : "Parameters"}--> rollingWindow
 
@@ -190,6 +367,10 @@ either `start` or `end`, which will match the start or end of the selected date
 range. By default, the `leading` and `trailing` parameters are set to zero and
 `offset` is set to `end`.
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`Orders`, {
   measures: {
@@ -204,7 +385,30 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: rollingCountMonth
+        sql: id
+        type: count
+        rollingWindow:
+          trailing: 1 month
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Here's an example of an `unbounded` window that's used for cumulative counts:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -219,6 +423,24 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: cumulativeCount
+        type: count
+        rollingWindow:
+          trailing: unbounded
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> drillMembers
 
 Using the `drillMembers` parameter, you can define a set of [drill
@@ -226,19 +448,56 @@ down][ref-drilldowns] fields for the measure. `drillMembers` is defined as an
 array of dimensions. Cube.js automatically injects dimensions’ names and other
 cubes’ names with dimensions in the context, so you can reference these
 variables in the `drillMembers` array. [Learn more about how to define and use
-drill downs][ref-drilldowns].
+drilldowns][ref-drilldowns].
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
-revenue: {
-  type: `sum`,
-  sql: `price`,
-  drillMembers: [id, price, status, Products.name, Products.id]
-}
+cube('Orders', {
+  ...,
+
+  measures: {
+    revenue: {
+      type: `sum`,
+      sql: `price`,
+      drillMembers: [id, price, status, Products.name, Products.id],
+    },
+  },
+});
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: revenue
+        type: sum
+        sql: price
+        drillMembers:
+          - id
+          - price
+          - status
+          - Products.name
+          - Products.id
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 ### <--{"id" : "Parameters"}--> meta
 
 Custom metadata. Can be used to pass any information to the frontend.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -246,7 +505,6 @@ cube(`Orders`, {
     revenue: {
       type: `sum`,
       sql: `price`,
-      //...
       meta: {
         any: 'value',
       },
@@ -255,11 +513,34 @@ cube(`Orders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: revenue
+        type: sum
+        sql: price
+        meta:
+          any: value
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Calculated Measures
 
 In the case where you need to specify a formula for measure calculating with
 other measures, you can compose a formula in `sql`. For example, to calculate
 the conversion of buyers of all users.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Orders`, {
@@ -272,6 +553,24 @@ cube(`Orders`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    measures:
+      - name: purchasesToCreatedAccountRatio
+        sql: '{purchases} / {Users.count} * 100.0'
+        type: number
+        format: percent
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 You can create calculated measures from several joined cubes. In this case, a
 join will be created automatically.

@@ -26,9 +26,13 @@ Let’s consider the following example of our imaginary e-commerce store. We hav
 an Orders cube, which describes orders in our store. It’s connected to Users and
 Products.
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`Orders`, {
-  sql: `select * from orders`,
+  sql: `SELECT * FROM orders`,
 
   joins: {
     Users: {
@@ -66,6 +70,47 @@ cube(`Orders`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    sql: `SELECT * FROM orders`
+
+    joins:
+      - name: Users
+        type: belongsTo
+        sql: ${Orders}.user_id = ${Users}.id
+      - name: Products
+        type: belongsTo
+        sql: ${Orders}.product_id = ${Products}.id
+
+    measures:
+      - name: count
+        type: count
+        drillMembers:
+          - id
+          - status
+          - Products.name
+          - Users.email
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primaryKey: true
+        shown: true
+      - name: status
+        sql: status
+        type: string
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 You can follow [this tutorial][blog-drilldown-api] to learn more about building
 a UI for drilldowns.
@@ -109,6 +154,10 @@ GROUP BY 1
 
 Cube makes subqueries easy and efficient. Subqueries are defined as regular
 dimensions with the parameter `subQuery` set to true.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Deals`, {
@@ -162,12 +211,58 @@ cube(`SalesManagers`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Deals
+    sql: SELECT * FROM deals
+
+    measures:
+      - name: amount
+        sql: amount
+        type: sum
+
+  - name: SalesManagers
+    sql: SELECT * FROM sales_managers
+
+    joins:
+      - name: Deals
+        relationship: hasMany
+        sql: ${SalesManagers}.id = ${Deals}.sales_manager_id
+
+    measures:
+      - name: averageDealAmount
+        sql: ${dealsAmount}
+        type: avg
+
+    dimensions:
+      - name: id
+        sql: id
+        type: string
+        primaryKey: true
+      - name: dealsAmount
+        sql: ${Deals.amount}
+        type: number
+        subQuery: true
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 A subquery requires referencing at least one [measure][ref-schema-ref-measures]
 in its definition. Generally speaking, all the columns used to define a subquery
 dimension should first be defined as [measures][ref-schema-ref-measures] on
 their respective cubes and then referenced from a subquery dimension over a
 [join][ref-schema-ref-joins]. For example the following schema will **not**
 work:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`Deals`, {
@@ -193,9 +288,40 @@ cube(`SalesManagers`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Deals
+    sql: select * from deals
+
+    measures:
+      - name: count
+        type: count
+
+  - name: SalesManagers
+    # ...
+    dimensions:
+      # ...
+      - name: dealsAmount
+        sql: SUM(${Deals}.amount) # Doesn't work, because `amount` is not a measure on `Deals`
+        type: number
+        subQuery: true
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 You can reference subquery dimensions in measures as usual
 [dimensions][ref-schema-ref-dimensions]. The example below shows the definition
 of an average deal amount per sales manager:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`SalesManagers`, {
@@ -220,6 +346,18 @@ cube(`SalesManagers`, {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 ### <--{"id" : "Subquery"}--> Under the hood
 
@@ -266,6 +404,10 @@ table's datetime information is stored as a string. Most SQL databases support
 datetime parsing which allows converting strings to timestamps. Let's consider
 an example cube for BigQuery:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`Events`, {
   sql: `SELECT * FROM schema.events`,
@@ -281,9 +423,21 @@ cube(`Events`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 In this particular cube, the `date` column will be parsed using the `%Y-%m-%d`
 format. Please note that as we do not pass timezone parameter to
-[`PARSE_TIMESTAMP`][bq-parse-timestamp], it will set `UTC` as the timezone by
+[`PARSE_TIMESTAMP()`][bq-parse-timestamp], it will set `UTC` as the timezone by
 default. You should always set timezone appropriately for parsed timestamps as
 Cube always does timezone conversions according to user settings.
 

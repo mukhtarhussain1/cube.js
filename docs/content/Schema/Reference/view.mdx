@@ -26,6 +26,10 @@ to include measures and dimensions from other cubes into the view. In the
 example below, we create a new view `ActiveUsers` which is made up of properties
 from the `Users` cube:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```typescript
 view(`ActiveUsers`, {
   description: `14 days rolling count of active users`,
@@ -39,11 +43,34 @@ view(`ActiveUsers`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+views:
+  - name: active_users
+    includes:
+      # Measures
+      - users.rolling_count
+      # Dimensions
+      - users.city
+      - users.created_at
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 You also can reference measures and dimensions one-by-one. This is helpful when
 there is a need to control the join path or to rename measures and dimensions
 from the underlying cubes. In the example below, we create a view
 `CompletedOrders` which brings in dimensions from the `Users` cube through
 nested joins:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```typescript
 view(`CompletedOrders`, {
@@ -69,8 +96,26 @@ view(`CompletedOrders`, {
 });
 ```
 
-Views can be queried the same way as cubes; the example below show how to query
-the above view with SQL API.
+</Snippet>
+
+<Snippet>
+
+```yaml
+views:
+  - name: CompletedOrders
+    includes:
+      # Measures
+      - Orders.completedCount
+      # Dimensions
+      - Orders.Users.city
+```
+
+</Snippet>
+
+</SnippetGroup>
+
+Views can be queried the same way as cubes; the example below shows how to query
+the above view with the SQL API:
 
 ```sql
 SELECT
@@ -91,15 +136,37 @@ A description of the view allows your team to better understand what its purpose
 is. It is a very simple and yet useful tool that gives a hint to everyone and
 ensures that data is interpreted correctly by users.
 
+<SnippetGroup>
+
+<Snippet>
+
 ```typescript
 view(`ActiveUsers`, {
   description: `14 days rolling count of active users`,
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+views:
+  - name: ActiveUsers
+    description: 14 days rolling count of active users
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> includes
 
 The `includes` property is used to bulk add measures or dimensions to a view.
+
+<SnippetGroup>
+
+<Snippet>
 
 ```typescript
 view(`ActiveUsers`, {
@@ -114,12 +181,35 @@ view(`ActiveUsers`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+views:
+  - name: ActiveUsers
+    includes:
+      # Measures
+      - users.rolling_count
+      # Dimensions
+      - users.city
+      - users.created_at
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ### <--{"id" : "Parameters"}--> shown
 
 The `shown` property is used to manage the visibility of a view. Some data may
 be available only to specific roles within an organization or to specific
 customers. In the example below, we’re making the `ARR` view only visible to
 users with finance permissions:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```typescript
 view(`ARR`, {
@@ -128,3 +218,24 @@ view(`ARR`, {
   includes: [Revenue.arr, Revenue.date, Customers.plan],
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+views:
+  - name: ARR
+    description: Annual Recurring Revenue
+    shown: COMPILE_CONTEXT.permissions['finance'],
+    includes:
+      # Measures
+      - Revenue.arr
+      # Dimensions
+      - Revenue.date
+      - Customers.plan
+```
+
+</Snippet>
+
+</SnippetGroup>

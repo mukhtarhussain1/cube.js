@@ -22,6 +22,10 @@ For an example omnichannel store which has both online and offline sales, let's
 calculate summary metrics for revenue, customer count, etc. We have
 `RetailOrders` cube for offline sales:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube(`RetailOrders`, {
   sql: `SELECT * FROM retail_orders`,
@@ -47,7 +51,23 @@ cube(`RetailOrders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 An `OnlineOrders` cube for online sales:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`OnlineOrders`, {
@@ -74,7 +94,23 @@ cube(`OnlineOrders`, {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Given the above cubes, a data blending cube can be introduced as follows:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube(`AllSales`, {
@@ -138,13 +174,25 @@ FROM ${RetailOrders.sql()}
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Another use case of the Data Blending approach would be when you want to chart
 some measures (business related) together and see how they correlate.
 
 Provided we have the aforementioned tables `OnlineOrders` and `RetailOrders`
 let's assume that we want to chart those measures together and see how they
-correlate. You can simply pass the queries to the Cube.js client, and it will
-merge the results which will let you easily display it on the chart.
+correlate. You can simply pass the queries to the Cube client, and it will merge
+the results which will let you easily display it on the chart.
 
 ```javascript
 import cubejs from '@cubejs-client/core';

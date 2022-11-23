@@ -41,14 +41,36 @@ cube per file. Within each cube are definitions of [dimensions][self-dimensions]
 and [measures][self-measures]. Typically, a cube points to a single table in
 your database using the [`sql` property][ref-schema-ref-sql]:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Orders', {
   sql: `SELECT * FROM orders`,
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    sql: 'SELECT * FROM orders'
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 The `sql` property of a cube is flexible enough to accommodate more complex SQL
 queries too:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -64,11 +86,27 @@ WHERE
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Dimensions
 
 Dimensions represent the properties of a **single** data point in the cube.
 [The `orders` table](#top) contains only dimensions, so representing them in the
 `Orders` cube is straightforward:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -91,8 +129,37 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    # ...
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        # Here we explicitly let Cube know this field is the primary key
+        # This is required for de-duplicating results when using joins
+        primaryKey: true
+      - name: status
+        sql: status
+        type: string
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 [The `line_items` table](#top) also has a couple of dimensions which can be
 represented as follows:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('LineItems', {
@@ -116,6 +183,28 @@ cube('LineItems', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: LineItems
+    # ...
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        # Again, we explicitly let Cube know this field is the primary key
+        # This is required for de-duplicating results when using joins
+        primary_key: true
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Dimensions can be of different types, and you can find them all
 [here][ref-schema-dimension-types].
 
@@ -126,6 +215,10 @@ dimensions allow grouping the result set by a unit of time (e.g. hours, days,
 weeks). In analytics, this is also known as "granularity".
 
 We can add the necessary time dimensions to both schemas as follows:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -149,6 +242,32 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    # ...
+
+    dimensions:
+      - name: created_at
+        sql: 'created_at'
+        type: time
+      - name: completed_at
+        sql: 'completed_at'
+        type: time
+```
+
+</Snippet>
+
+</SnippetGroup>
+
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('LineItems', {
 
@@ -166,6 +285,25 @@ cube('LineItems', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: LineItems
+    # ...
+
+    dimensions:
+      - name: created_at
+        sql: created_at
+        type: time
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 Time dimensions are essential to enabling performance boosts such as
 [partitioned pre-aggregations][ref-caching-use-preaggs-partition-time] and
 [incremental refreshes][ref-tutorial-incremental-preagg].
@@ -175,6 +313,10 @@ Time dimensions are essential to enabling performance boosts such as
 Measures represent the properties of a **set of data points** in the cube. To
 add a measure called `count` to our `Orders` cube, for example, we can do the
 following:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -189,8 +331,30 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    # ...
+
+    measures:
+      - name: count
+        type: count
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 In our `LineItems` cube, we can also create a measure to sum up the total value
 of line items sold:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('LineItems', {
@@ -205,6 +369,24 @@ cube('LineItems', {
   },
 })
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: LineItems
+    # ...
+
+    measures:
+      - name: count
+        type: count
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 Measures can be of different types, and you can find them all
 [here][ref-schema-measure-types].
@@ -225,6 +407,10 @@ filter for `IS NOT NULL` on the required column.
 In the following example, we are left-joining the `LineItems` cube onto our
 `Orders` cube:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Orders', {
 
@@ -240,6 +426,18 @@ cube('Orders', {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+@TODO
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 There are three kinds of join relationships:
 
@@ -259,6 +457,10 @@ it easy to re-use common filters across a variety of queries.
 To add a segment which limits results to completed orders, we can do the
 following:
 
+<SnippetGroup>
+
+<Snippet>
+
 ```javascript
 cube('Orders', {
   ...,
@@ -270,11 +472,33 @@ cube('Orders', {
 });
 ```
 
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    # ...
+
+    segments:
+      - name: onlyCompleted
+        sql: "{CUBE}.status = 'completed'"
+```
+
+</Snippet>
+
+</SnippetGroup>
+
 ## Pre-Aggregations
 
 Pre-aggregations are a powerful way of caching frequently-used, expensive
 queries and keeping the cache up-to-date on a periodic basis. Within a data
 schema, they are defined under the `preAggregations` property:
+
+<SnippetGroup>
+
+<Snippet>
 
 ```javascript
 cube('Orders', {
@@ -291,6 +515,27 @@ cube('Orders', {
   },
 });
 ```
+
+</Snippet>
+
+<Snippet>
+
+```yaml
+cubes:
+  - name: Orders
+    # ...
+
+    preAggregations:
+      - name: main
+        measures: [CUBE.count]
+        dimensions: [CUBE.status]
+        time_dimension: created_at
+        granularity: day
+```
+
+</Snippet>
+
+</SnippetGroup>
 
 A more thorough introduction can be found in [Getting Started with
 Pre-Aggregations][ref-caching-preaggs-intro].
